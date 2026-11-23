@@ -2,35 +2,27 @@
 const Eris = require("eris");
 const keep_alive = require("./keep_alive.js");
 
-// Configurable presence settings (matches your screenshot by default)
-const STATUS = process.env.STATUS || "idle"; // Options: 'online', 'idle', 'dnd'
+// Settings
+const STATUS = process.env.STATUS || "online"; // 'online', 'idle', 'dnd'
 const GAME_NAME = process.env.GAME_NAME || "FiveM";
-const GAME_DETAILS = process.env.GAME_DETAILS || "Playing Grand Role Play - gta5grand.com";
 
 // Replace TOKEN with your account token in environment variables
 const bot = new Eris(process.env.token);
 
 bot.on("ready", () => {
-  console.log(`Logged in as ${bot.user.username}`);
+  console.log(`[+] Logged in as: ${bot.user.username}`);
 
-  // Set Rich Presence / Now Playing
-  bot.editStatus(STATUS, [
-    {
-      name: GAME_NAME,
-      type: 0, // 0 = Playing
-      details: GAME_DETAILS,
-      state: GAME_DETAILS,
-      timestamps: {
-        start: Date.now()
-      }
-    }
-  ]);
+  // Set Playing Activity
+  bot.editStatus(STATUS, {
+    name: GAME_NAME,
+    type: 0 // 0 = Playing
+  });
 
-  console.log(`Presence set: [${STATUS}] Playing ${GAME_NAME} - ${GAME_DETAILS}`);
+  console.log(`[+] Status set: [${STATUS}] Playing ${GAME_NAME}`);
 });
 
 bot.on("error", (err) => {
-  console.error(err);
+  console.error("[-] Error:", err);
 });
 
 bot.connect();
