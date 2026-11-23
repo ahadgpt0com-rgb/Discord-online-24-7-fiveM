@@ -1,43 +1,43 @@
 // Copyright (c) ahadgpt. All rights reserved.
-const Eris = require("eris");
+const { Client } = require("discord.js-selfbot-v13");
+const { RichPresence } = require("discord.js-selfbot-rpc");
 const keep_alive = require("./keep_alive.js");
 
-// Discord Developer Portal Application Client ID
+const client = new Client({ checkUpdate: false });
+
 const CLIENT_ID = process.env.CLIENT_ID || "884374609527455764";
 
+client.on("ready", async () => {
+  console.log(`[+] Successfully logged in as: ${client.user.tag}`);
+
+  try {
+    const presence = new RichPresence()
+      .setApplicationId(CLIENT_ID)
+      .setType("PLAYING")
+      .setName("Grand Theft Auto VI")
+      .setDetails("Grand Theft Auto VI")
+      .setState("Exploring Vice City...")
+      .setStartTimestamp(Date.now())
+      .setAssetsLargeImage("gta6_logo")
+      .setAssetsLargeText("GTA VI - Next Gen Experience")
+      .setAssetsSmallImage("online_icon")
+      .setAssetsSmallText("Online in Vice City")
+      .setStatus("online"); // 'online', 'idle', 'dnd'
+
+    client.user.setPresence(presence.toData());
+    console.log("[+] GTA VI Rich Presence successfully activated!");
+  } catch (error) {
+    console.error("[-] Error setting presence:", error);
+  }
+});
+
 // Replace TOKEN with your account token in environment variables
-const bot = new Eris(process.env.token);
+const token = process.env.token;
 
-bot.on("ready", () => {
-  console.log(`[+] Logged in as: ${bot.user.username}`);
-
-  const startTimestamp = Date.now();
-
-  // Set GTA VI Rich Presence on Discord Gateway (Render.com 24/7)
-  bot.editStatus("online", [
-    {
-      name: "Grand Theft Auto VI",
-      type: 0, // 0 = Playing
-      application_id: CLIENT_ID,
-      details: "Grand Theft Auto VI",
-      state: "Exploring Vice City...",
-      timestamps: {
-        start: startTimestamp
-      },
-      assets: {
-        large_image: "gta6_logo",
-        large_text: "GTA VI - Next Gen Experience",
-        small_image: "online_icon",
-        small_text: "Online in Vice City"
-      }
-    }
-  ]);
-
-  console.log("[+] GTA VI Rich Presence successfully activated 24/7!");
-});
-
-bot.on("error", (err) => {
-  console.error("[-] Error:", err);
-});
-
-bot.connect();
+if (!token) {
+  console.error("[-] ERROR: Discord token is missing in environment variables!");
+} else {
+  client.login(token).catch((err) => {
+    console.error("[-] Login failed. Check your token:", err.message);
+  });
+}
