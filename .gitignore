@@ -1,0 +1,8 @@
+# Dependencies
+node_modules/
+
+# Environment variables (Never upload your token to GitHub!)
+.env
+
+# Logs
+*.log
