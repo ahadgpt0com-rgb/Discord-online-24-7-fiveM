@@ -2,7 +2,7 @@
 const RPC = require("discord-rpc");
 
 // আপনার ডেভেলপার পোর্টাল থেকে কপি করা Client ID
-const clientId = "884374609527455764";
+const clientId = "1574435440474329199";
 
 // RPC ক্লায়েন্ট রেজিস্টার ও ইনিশিয়ালাইজ করা
 RPC.register(clientId);
