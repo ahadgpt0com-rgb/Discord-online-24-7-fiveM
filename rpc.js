@@ -1,42 +1,38 @@
-// Copyright (c) ahadgpt. All rights reserved.
 const RPC = require("discord-rpc");
 
-// আপনার ডেভেলপার পোর্টাল থেকে কপি করা Client ID
-const clientId = "1574435440474329199";
+// আপনার Discord Developer Portal থেকে নেওয়া Application Client ID
+const clientId = "1561295851542806570";
 
-// RPC ক্লায়েন্ট রেজিস্টার ও ইনিশিয়ালাইজ করা
-RPC.register(clientId);
+// নতুন ভার্সনগুলোতে scope সাধারণত ['rpc'] বা ডিফল্ট থাকে
 const rpc = new RPC.Client({ transport: "ipc" });
 
-// টাইমারের জন্য শুরুর সময়
-const startTimestamp = new Date();
+const startTimestamp = Date.now();
 
-async function setActivity() {
-  if (!rpc) return;
-
-  rpc.setActivity({
-    details: "Grand Theft Auto VI",             // প্রধান গেমের নাম বা স্ট্যাটাস
-    state: "Exploring Vice City...",             // নিচের লাইন (Details-এর নিচে)
-    startTimestamp: startTimestamp,              // গেম কতক্ষণ ধরে চলছে (টাইমার)
-    largeImageKey: "gta6_logo",                  // ডেভেলপার পোর্টাল থেকে আপলোড করা ছবির অ্যাসেট কি
-    largeImageText: "GTA VI - Next Gen Experience", // ছবির ওপর কার্সর নিলে যা ভেসে উঠবে
-    smallImageKey: "online_icon",                 // ছোট আইকন (যদি থাকে)
-    smallImageText: "Online in Vice City",
-    instance: false
-  });
+async function setGTA6Presence() {
+  try {
+    await rpc.setActivity({
+      details: "Playing on PlayStation • Grand Theft Auto VI",
+      state: "Vice City • State of Leonida",
+      startTimestamp,
+      largeImageKey: "gta6_logo",          // Developer Portal-এ আপলোড করা ছবির Key
+      largeImageText: "Grand Theft Auto VI",
+      smallImageKey: "vice_icon",          // ঐচ্ছিক ছোট আইকনের Key
+      smallImageText: "3x Streak • Trending",
+      instance: false,
+    });
+  } catch (err) {
+    console.error("Failed to update GTA VI RPC:", err);
+  }
 }
 
 rpc.on("ready", () => {
-  console.log("GTA VI Custom RPC successfully connected! Press Ctrl+C to exit.");
-  
-  // প্রথমবার স্ট্যাটাস সেট করা
-  setActivity();
+  console.log(`Logged in as ${rpc.user.username}! GTA VI RPC is active.`);
+  setGTA6Presence();
 
-  // প্রতি ১৫ সেকেন্ড পরপর স্ট্যাটাস রিফ্রেশ
-  setInterval(() => {
-    setActivity();
-  }, 15000);
+  // প্রতি ৩০ সেকেন্ডে আপডেট রাখা নিরাপদ (rate limit এড়াতে)
+  setInterval(setGTA6Presence, 30 * 1000);
 });
 
-// কানেক্ট করা
-rpc.login({ clientId }).catch(console.error);
+rpc.login({ clientId }).catch((err) => {
+  console.error("Could not connect to Discord RPC:", err);
+});
