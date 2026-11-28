@@ -5,8 +5,9 @@ const keep_alive = require("./keep_alive.js");
 
 const client = new Client({ checkUpdate: false });
 
-const CLIENT_ID = process.env.CLIENT_ID || "884374609527455764";
-const startTimestamp = new Date();
+// 1st code-er Client ID default hisebe set kora hoyeche
+const CLIENT_ID = process.env.CLIENT_ID || "1561295851542806570";
+const startTimestamp = Date.now();
 
 async function setGTA6Presence(largeImage = "gta6_logo", smallImage = "vice_icon") {
   try {
@@ -24,7 +25,6 @@ async function setGTA6Presence(largeImage = "gta6_logo", smallImage = "vice_icon
       .setStartTimestamp(startTimestamp);
 
     client.user.setPresence(presence.toData());
-    console.log("[+] GTA VI Rich Presence successfully activated!");
   } catch (error) {
     console.error("[-] Failed to update GTA VI RPC:", error);
   }
@@ -36,7 +36,7 @@ client.on("ready", async () => {
   let largeImage = "gta6_logo";
   let smallImage = "vice_icon";
 
-  // Attempt to resolve asset IDs safely if available
+  // Developer Portal-er asset ID resolve kora (jodi thake)
   try {
     const fetchedLarge = await Util.getAssets(CLIENT_ID, "gta6_logo");
     if (fetchedLarge && fetchedLarge.id) largeImage = fetchedLarge.id;
@@ -47,10 +47,17 @@ client.on("ready", async () => {
     if (fetchedSmall && fetchedSmall.id) smallImage = fetchedSmall.id;
   } catch (e) {}
 
+  // Prothombar presence set kora
   await setGTA6Presence(largeImage, smallImage);
+  console.log("[+] GTA VI Rich Presence successfully activated!");
+
+  // Proti 30 second-e presence auto-refresh
+  setInterval(() => {
+    setGTA6Presence(largeImage, smallImage);
+  }, 30 * 1000);
 });
 
-// Replace TOKEN with your account token in environment variables
+// Environment variable theke account token neya
 const token = process.env.token;
 
 if (!token) {
