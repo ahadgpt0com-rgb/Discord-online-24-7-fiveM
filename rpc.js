@@ -1,6 +1,6 @@
 const RPC = require("discord-rpc");
 
-// আপনার Discord Developer Portal থেকে নেওয়া Application Client ID
+// আপনার Discord Developer Portal থেকে নেওয়া Application Client ID
 const clientId = "1561295851542806570";
 
 // নতুন ভার্সনগুলোতে scope সাধারণত ['rpc'] বা ডিফল্ট থাকে
@@ -29,7 +29,7 @@ rpc.on("ready", () => {
   console.log(`Logged in as ${rpc.user.username}! GTA VI RPC is active.`);
   setGTA6Presence();
 
-  // প্রতি ৩০ সেকেন্ডে আপডেট রাখা নিরাপদ (rate limit এড়াতে)
+  // প্রতি ৩০ সেকেন্ডে আপডেট রাখা নিরাপদ (rate limit এড়াতে)
   setInterval(setGTA6Presence, 30 * 1000);
 });
 
