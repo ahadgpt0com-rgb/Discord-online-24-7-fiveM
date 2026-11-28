@@ -6,43 +6,48 @@ const keep_alive = require("./keep_alive.js");
 const client = new Client({ checkUpdate: false });
 
 const CLIENT_ID = process.env.CLIENT_ID || "884374609527455764";
+const startTimestamp = new Date();
 
-client.on("ready", async () => {
-  console.log(`[+] Successfully logged in as: ${client.user.tag}`);
-
+async function setGTA6Presence(largeImage = "gta6_logo", smallImage = "vice_icon") {
   try {
-    let largeImage = "gta6_logo";
-    let smallImage = "online_icon";
-
-    // Attempt to resolve asset IDs safely if available
-    try {
-      const fetchedLarge = await Util.getAssets(CLIENT_ID, "gta6_logo");
-      if (fetchedLarge && fetchedLarge.id) largeImage = fetchedLarge.id;
-    } catch (e) {}
-
-    try {
-      const fetchedSmall = await Util.getAssets(CLIENT_ID, "online_icon");
-      if (fetchedSmall && fetchedSmall.id) smallImage = fetchedSmall.id;
-    } catch (e) {}
-
-    const presence = new RichPresence()
+    const presence = new RichPresence(client)
       .setStatus("online")
       .setApplicationId(CLIENT_ID)
       .setType("PLAYING")
       .setName("Grand Theft Auto VI")
-      .setDetails("Grand Theft Auto VI")
-      .setState("Exploring Vice City...")
+      .setDetails("Playing on PlayStation • Grand Theft Auto VI")
+      .setState("Vice City • State of Leonida")
       .setAssetsLargeImage(largeImage)
-      .setAssetsLargeText("GTA VI - Next Gen Experience")
+      .setAssetsLargeText("Grand Theft Auto VI")
       .setAssetsSmallImage(smallImage)
-      .setAssetsSmallText("Online in Vice City")
-      .setTimestamp();
+      .setAssetsSmallText("3x Streak • Trending")
+      .setStartTimestamp(startTimestamp);
 
     client.user.setPresence(presence.toData());
     console.log("[+] GTA VI Rich Presence successfully activated!");
   } catch (error) {
-    console.error("[-] Error setting presence:", error);
+    console.error("[-] Failed to update GTA VI RPC:", error);
   }
+}
+
+client.on("ready", async () => {
+  console.log(`[+] Successfully logged in as: ${client.user.tag}`);
+
+  let largeImage = "gta6_logo";
+  let smallImage = "vice_icon";
+
+  // Attempt to resolve asset IDs safely if available
+  try {
+    const fetchedLarge = await Util.getAssets(CLIENT_ID, "gta6_logo");
+    if (fetchedLarge && fetchedLarge.id) largeImage = fetchedLarge.id;
+  } catch (e) {}
+
+  try {
+    const fetchedSmall = await Util.getAssets(CLIENT_ID, "vice_icon");
+    if (fetchedSmall && fetchedSmall.id) smallImage = fetchedSmall.id;
+  } catch (e) {}
+
+  await setGTA6Presence(largeImage, smallImage);
 });
 
 // Replace TOKEN with your account token in environment variables
